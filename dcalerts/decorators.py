@@ -1,26 +1,5 @@
-import requests
-import time
+from messages import MessageHandler
 from functools import wraps
-
-class MessageHandler:
-    def __init__(self, webhook_url):
-        self.webhook_url=webhook_url
-
-    def send(self, message):
-        """
-        Send a message to a Discord webhook.
-        """
-        payload = {"content": message}
-        requests.post(self.webhook_url, json=payload)
-
-def create_timer(seconds_from_now):
-    """
-    Returns a string which Discord reads as a timer to a given second. You can include this in the settings dict of notify:\n
-    settings={\n
-        \tmessage_before="Time until completion: "+create_timer(42)\n
-    }
-    """
-    return "<t:"+str(int(time.time()+seconds_from_now))+":R>"
 
 def notify(func):
     """
