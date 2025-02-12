@@ -4,8 +4,9 @@ Provides a wrapper function and other utilities that let the user send Discord m
 ## Installation
 
 You can install directly from GitHub:
+```
 pip install git+https://github.com/WoolyMamooth/dcalerts
-
+```
 ## Usage
 
 ### MessageHandler
