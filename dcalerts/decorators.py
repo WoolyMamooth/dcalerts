@@ -1,4 +1,4 @@
-from messages import MessageHandler
+from .messages import MessageHandler
 from functools import wraps
 
 def notify(func):
