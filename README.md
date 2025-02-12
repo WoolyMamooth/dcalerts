@@ -10,22 +10,21 @@ pip install git+https://github.com/WoolyMamooth/dcalerts
 
 ### MessageHandler
 
-´´´python
+```python
 
 from dcalerts import MessageHandler, send_message
 
 message_handler = MessageHandler("your webhook url here")
-
 message_handler.send("This is a message.")
 
 # or you could just use send_message
 
 send_message("your webhook url here", "This is a message.")
 
-´´´
+```
 
 ### notify decorator
-´´´python
+```python
 
 from dcalerts import notify, create_timer
 from time import sleep
@@ -42,4 +41,4 @@ settings={
 
 foo(10, settings=settings)
 
-´´´
+```
