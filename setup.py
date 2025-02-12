@@ -9,9 +9,7 @@ setup(
     url="https://github.com/WoolyMamooth/dcalerts",
     packages=find_packages(),
     install_requires=[
-        "requests",
-        "time",
-        "functools"
+        "requests"
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
