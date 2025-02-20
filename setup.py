@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="dcalerts",
-    version="0.2.1",
+    version="0.2.2",
     description="A Python decorator to send Discord webhook notifications before and after function execution.",
     author="WoolyMamooth",
     author_email="",

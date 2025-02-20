@@ -13,7 +13,7 @@ def code_block(text:str, language:str=""):
     """
     Wraps text in a code block.
     """
-    return "```"+language+text+"```"
+    return "```"+language+"\n"+text+"```"
 
 def bold(text:str):
     """
