@@ -67,28 +67,28 @@ def mention(user_id:str):
     """
     Mentions a user.
     """
-    return "<@"+user_id+">"
+    return "@"+user_id
 
 def channel_mention(channel_id:str):
     """
     Mentions a channel.
     """
-    return "<#"+channel_id+">"
+    return "#"+channel_id
 
 def role_mention(role_id:str):
     """
     Mentions a role.
     """
-    return "<@&"+role_id+">"
+    return "@"+role_id
 
 def emoji(emoji_id:str):
     """
     Adds an emoji.
     """
-    return "<:"+emoji_id+">"
+    return ":"+emoji_id+":"
 
-def custom_emoji(emoji_id:str, emoji_name:str):
+def header(text:str, level:int=1):
     """
-    Adds a custom emoji.
+    Creates a header.
     """
-    return "<:"+emoji_name+":"+emoji_id+">"
+    return "#"*level+" "+text

@@ -13,9 +13,11 @@ class MessageHandler:
         """
         send_message(webhook_url=self.webhook_url, message=message)
 
-def send_message(webhook_url:str, message:str):
+def send_message(webhook_url:str|dict, message:str):
     """
     Send a message to a Discord webhook.
     """
+    if( type(webhook_url)== dict):
+        webhook_url=webhook_url["webhook_url"]
     payload = {"content": message}
     requests.post(webhook_url, json=payload)
