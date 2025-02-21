@@ -22,6 +22,13 @@ message_handler.send("This is a message.")
 
 send_message("your webhook url here", "This is a message.")
 
+# or
+
+settings={
+    "webhook_url" : "your webhook url here"
+}
+
+send_message(settings, "This is a message")
 ```
 
 ### notify decorator
