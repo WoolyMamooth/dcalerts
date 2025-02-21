@@ -15,6 +15,12 @@ def code_block(text:str, language:str=""):
     """
     return "```"+language+"\n"+text+"```"
 
+def inline_code(text:str):
+    """
+    Wraps text in inline code.
+    """
+    return "`"+text+"`"
+
 def bold(text:str):
     """
     Makes text bold.
