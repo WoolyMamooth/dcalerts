@@ -1,23 +1,23 @@
 from .messages import MessageHandler
 from functools import wraps
 
-def notify(func):
+def notify_simple(func):
     """
     Decorator that sends a Discord message before and after the function is run.\n
-    Include a ***settings*** dict to set messages and url, for example:\n
+    Include a ***dcalerts_settings*** dict to set messages and url, for example:\n
     settings={\n
-        \t"webhook_url" : WEBHOOK_URL,
-        \t"message_before" : "Before running",
-        \t"message_after" : "After running"
+        \t"webhook" : WEBHOOK_URL,
+        \t"before" : "Before running",
+        \t"after" : "After running"
     }\n
     If a message isn't given it will not be sent, so you can notify only after running.
     """
     @wraps(func)
     def wrapper(*args, **kwargs):
-        settings=kwargs.pop("settings")
-        message_handler=MessageHandler(settings["webhook_url"])
-        message_before=settings.get("message_before")
-        message_after=settings.get("message_after")
+        settings=kwargs.pop("dcalerts_settings")
+        message_handler=MessageHandler(settings["webhook"])
+        message_before=settings.get("before")
+        message_after=settings.get("after")
 
         if message_before:
             message_handler.send(message_before)
@@ -31,29 +31,29 @@ def notify(func):
     
     return wrapper
 
-def notify_complex(func):
+def notify(func):
     """
     Decorator that sends a Discord message before and after the function is run.
-    Include a ***settings*** dict to set messages and url.
+    Include a ***dcalerts_settings*** dict to set messages and url.
     Accepts lists and functions as messages, which will be evaluated and sent together as one message.
     You can specify a list item separator as well.
     For example:\n
     settings={\n
-        \t"webhook_url" : WEBHOOK_URL,
-        \t"message_before" : ["Before", "running", foo()],
-        \t"message_after" : ["Results:", foo_results()],
+        \t"webhook" : WEBHOOK_URL,
+        \t"before" : ["Before", "running", foo()],
+        \t"after" : ["Results:", foo_results()],
         \t"list_item_sep" : "\\t"
     }\n
     If a message isn't given it will not be sent, so you can notify only after running.
     """
     @wraps(func)
     def wrapper(*args, **kwargs):
-        settings=kwargs.pop("settings")
-        message_handler=MessageHandler(settings["webhook_url"])
+        settings=kwargs.pop("dcalerts_settings")
+        message_handler=MessageHandler(settings["webhook"])
         list_item_sep=settings.get("list_item_sep", "\n")
 
         # ------ Before ------ #
-        before=settings.get("message_before")
+        before=settings.get("before")
         if before:
             message_handler.send(_make_message(before, list_item_sep=list_item_sep))
         # -------------------- #
@@ -61,7 +61,7 @@ def notify_complex(func):
         result = func(*args, **kwargs)
 
         # ------ After ------ #
-        after=settings.get("message_after")
+        after=settings.get("after")
         if after:
             message_handler.send(_make_message(after, list_item_sep=list_item_sep))
         # ------------------- #
@@ -82,7 +82,7 @@ def _make_message(input, list_item_sep="\n"):
     elif type(input)==list:
         for item in input:
             if callable(item):
-                item=str(item())
+                item=item()
             final_message+=str(item)+list_item_sep
     else:
         final_message+=str(input)
