@@ -1,4 +1,5 @@
 # dcalerts
+
 Provides a wrapper function and other utilities that let the user send Discord messages when their code execution starts or finishes.
 
 ## Installation
@@ -10,6 +11,7 @@ pip install git+https://github.com/WoolyMamooth/dcalerts
 ## Usage
 
 ### MessageHandler
+
 A simple class you can use to send messages to the same Discord channel.
 ```python
 from dcalerts import MessageHandler, send_message
@@ -18,7 +20,7 @@ message_handler = MessageHandler("your webhook url here")
 message_handler.send("This is a message.")
 ```
 
-or you could just use *send_message*
+or you could just use **send_message**
 
 ```python
 send_message("your webhook url here", "This is a message.")
@@ -33,6 +35,7 @@ send_message(settings, "This is a message")
 ```
 
 ### notify decorator
+
 This decorator lets you send messages both before and after the execution of the function you use it on. If you don't set one of the messages it will not be sent, so you could for example only send a message after the execution.
 Put everything you want to send into a dictionary together with your webhook link. Like so:
 ```python
@@ -51,7 +54,7 @@ settings={
     "webhook" : "your webhook url here",
     "before" : ["This", "is", "before"],
     "after" : ["Results", result_func()],
-    "list_item_sep" : "\\t"
+    "list_item_sep" : "\t"
 }
 ```
 Then you have to pass your dictionary to your function as *dcalerts_settings*:
@@ -65,3 +68,24 @@ def foo(t):
 
 foo(10, dcalerts_settings=settings)
 ``` 
+
+### Utils
+
+The following utility functions are available in `dcalerts.utils`. They return text in a format that Discord interprets in a special way:
+
+- **create_timer(seconds_from_now)**: Returns a string which Discord reads as a timer to a given second.
+- **code_block(text, language="")**: Wraps text in a code block.
+- **inline_code(text)**: Wraps text in inline code.
+- **bold(text)**: Makes text bold.
+- **italic(text)**: Makes text italic.
+- **underline(text)**: Underlines text.
+- **strikethrough(text)**: Strikes through text.
+- **spoiler(text)**: Makes text a spoiler.
+- **quote(text)**: Quotes text.
+- **block_quote(text)**: Quotes text in a block.
+- **link(text, url)**: Creates a hyperlink.
+- **mention(user_id)**: Mentions a user.
+- **channel_mention(channel_id)**: Mentions a channel.
+- **role_mention(role_id)**: Mentions a role.
+- **emoji(emoji_id)**: Adds an emoji.
+- **header(text, level=1)**: Creates a header.
