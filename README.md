@@ -37,7 +37,7 @@ send_message(settings, "This is a message")
 ### notify decorator
 
 This decorator lets you send messages both before and after the execution of the function you use it on. If you don't set one of the messages it will not be sent, so you could for example only send a message after the execution.
-Put everything you want to send into a dictionary together with your webhook link. Like so:
+Put everything you want to send into a dictionary together with your webhook link. (NOTE: you can also pass a **MessageHandler** instead of a string in the place of the webhook url) Like so:
 ```python
 settings={
     "webhook" : "your webhook url here",
@@ -45,15 +45,15 @@ settings={
     "after" : "After running"
 }
 ```
-You can also put in lists or even functions. If you put in a list for a message all of it's contents will be casted to string, then concatenated and sent as one message. You can set the separating character under the name *separator* (by default it's '**\\n**'). If you put in a function it will be executed after the decorated function and it's return value casted to string and added to the message. For example:
+You can also put in lists, lists of lists, and even functions. If you put in a list for a message all of it's contents will be casted to string, then concatenated and sent as one message. You can set the separating character under the name *separator* (by default it's '**\\n**'). If you put in a function it will be executed after the decorated function and it's return value casted to string and added to the message. For example:
 ```python
 result_func():
     return "some return value"
 
 settings={
     "webhook" : "your webhook url here",
-    "before" : ["This", "is", "before"],
-    "after" : ["Results", result_func()],
+    "before" : ["This", ["is", "before"]],
+    "after" : ["Results:", result_func()],
     "separator" : "\t"
 }
 ```
@@ -68,6 +68,22 @@ def foo(t):
 
 foo(10, dcalerts_settings=settings)
 ``` 
+You can also use **notify** like this:
+```python
+@notify(dcalerts_settings=settings)
+def foo(t)
+    sleep(t)
+
+foo(10)
+```
+Or like this:
+```python
+def foo(t):
+    sleep(t)
+
+foo = notify(settings)(foo)
+foo()
+```
 
 ### Utils
 

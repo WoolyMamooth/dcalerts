@@ -4,8 +4,11 @@ class MessageHandler:
     """
     This class lets you send messages via the given webhook.
     """
-    def __init__(self, webhook_url:str):
-        self.webhook_url=webhook_url
+    def __init__(self, webhook_url:str|object):
+        if type(webhook_url)==MessageHandler:
+            self.webhook_url=webhook_url.webhook_url
+        else:
+            self.webhook_url=webhook_url
 
     def send(self, message):
         """
