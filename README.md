@@ -20,7 +20,7 @@ message_handler = MessageHandler("your webhook url here")
 message_handler.send("This is a message.")
 ```
 
-or you could just use **send_message**
+or you could just use `send_message`
 
 ```python
 send_message("your webhook url here", "This is a message.")
@@ -33,11 +33,11 @@ dcalerts_settings={
 
 send_message(settings, "This is a message")
 ```
-
+---
 ### notify decorator
 
 This decorator lets you send messages both before and after the execution of the function you use it on. If you don't set one of the messages it will not be sent, so you could for example only send a message after the execution.
-Put everything you want to send into a dictionary together with your webhook link. (NOTE: you can also pass a **MessageHandler** instead of a string in the place of the webhook url) Like so:
+Put everything you want to send into a dictionary together with your webhook link. (NOTE: you can also pass a `MessageHandler` instead of a string in the place of the webhook url) Like so:
 ```python
 settings={
     "webhook" : "your webhook url here",
@@ -45,7 +45,7 @@ settings={
     "after" : "After running"
 }
 ```
-You can also put in lists, lists of lists, and even functions. If you put in a list for a message all of it's contents will be casted to string, then concatenated and sent as one message. You can set the separating character under the name *separator* (by default it's '*\\n*'). If you put in a function it will be executed after the decorated function, it's return value casted to string and added to the message. For example:
+You can also put in *lists*, *lists of lists*, and even *functions*. If you put in a list for a message all of it's contents will be casted to *string*, then concatenated and sent as one message. You can set the separating character under the name `separator` (by default it's `'\n'`). If you put in a function it will be executed, it's return value casted to *string* and added to the message. For example:
 ```python
 result_func():
     return "some return value"
@@ -57,7 +57,7 @@ settings={
     "separator" : "\t"
 }
 ```
-Furthermore, you can specify if you want to also send potential error messages. By default *send_error* is set to _False_ and *error_message* to _"ERROR"_.
+Furthermore, you can specify if you want to also send error messages. By default `send_error` is set to `False` and `error_message` to `"ERROR"`.
 ```python
 settings={
     ...
@@ -65,7 +65,8 @@ settings={
     "error_message" : ["An error","occurred."]
 }
 ```
-Then you have to pass your dictionary to your function as *dcalerts_settings*:
+---
+Once you have your settings *dict*, you just have to pass it to your function under the name `dcalerts_settings`:
 ```python
 from dcalerts import notify
 from time import sleep
@@ -76,7 +77,7 @@ def foo(t):
 
 foo(10, dcalerts_settings=settings)
 ``` 
-You can also use **notify** like this:
+You can also use `notify` like this:
 ```python
 @notify(dcalerts_settings=settings)
 def foo(t)
@@ -92,7 +93,7 @@ def foo(t):
 foo = notify(settings)(foo)
 foo()
 ```
-
+---
 ### Utils
 
 The following utility functions are available in `dcalerts.utils`. They return text in a format that Discord interprets in a special way:
