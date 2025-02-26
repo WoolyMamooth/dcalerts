@@ -42,7 +42,7 @@ def notify(func):
         \t"webhook" : WEBHOOK_URL,
         \t"before" : ["Before", "running", foo()],
         \t"after" : ["Results:", foo_results()],
-        \t"list_item_sep" : "\\t"
+        \t"separator" : "\\t"
     }\n
     If a message isn't given it will not be sent, so you can notify only after running.
     """
@@ -50,7 +50,7 @@ def notify(func):
     def wrapper(*args, **kwargs):
         settings=kwargs.pop("dcalerts_settings")
         message_handler=MessageHandler(settings["webhook"])
-        list_item_sep=settings.get("list_item_sep", "\n")
+        list_item_sep=settings.get("separator", "\n")
 
         # ------ Before ------ #
         before=settings.get("before")
