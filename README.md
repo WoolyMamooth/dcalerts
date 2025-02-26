@@ -45,7 +45,7 @@ settings={
     "after" : "After running"
 }
 ```
-You can also put in lists, lists of lists, and even functions. If you put in a list for a message all of it's contents will be casted to string, then concatenated and sent as one message. You can set the separating character under the name *separator* (by default it's '**\\n**'). If you put in a function it will be executed after the decorated function and it's return value casted to string and added to the message. For example:
+You can also put in lists, lists of lists, and even functions. If you put in a list for a message all of it's contents will be casted to string, then concatenated and sent as one message. You can set the separating character under the name *separator* (by default it's '*\\n*'). If you put in a function it will be executed after the decorated function, it's return value casted to string and added to the message. For example:
 ```python
 result_func():
     return "some return value"
@@ -55,6 +55,14 @@ settings={
     "before" : ["This", ["is", "before"]],
     "after" : ["Results:", result_func()],
     "separator" : "\t"
+}
+```
+Furthermore, you can specify if you want to also send potential error messages. By default *send_error* is set to _False_ and *error_message* to _"ERROR"_.
+```python
+settings={
+    ...
+    "send_error" : True,
+    "error_message" : ["An error","occurred."]
 }
 ```
 Then you have to pass your dictionary to your function as *dcalerts_settings*:
