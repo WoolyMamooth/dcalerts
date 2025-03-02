@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dcalerts"
+version = "0.3.0"
+description = "A Python decorator to send Discord webhook notifications before and after function execution."
+authors = [
+    { name = "WoolyMamooth", email = "" }
+]
+license = { text = "GNU GPLv3" }
+readme = "README.md"
+requires-python = ">=3.6"
+dependencies = [
+    "requests"
+]
+
+[project.urls]
+Homepage = "https://github.com/WoolyMamooth/dcalerts"
+
+[tool.setuptools]
+packages = ["dcalerts"]
+
+[tool.setuptools.packages.find]
+include = ["dcalerts*"]
+
+[project.classifiers]
+Programming-Language = "Python :: 3"
+License = "OSI Approved :: GNU GPLv3"
+Operating-System = "OS Independent"
