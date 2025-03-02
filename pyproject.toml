@@ -9,11 +9,16 @@ description = "A Python decorator to send Discord webhook notifications before a
 authors = [
     { name = "WoolyMamooth" }
 ]
-license = { text = "GNU GPLv3" }
+license = { text = "GNU General Public License v3 (GPLv3)" }
 readme = "README.md"
 requires-python = ">=3.6"
 dependencies = [
     "requests"
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent"
 ]
 
 [project.urls]
@@ -21,8 +26,3 @@ Homepage = "https://github.com/WoolyMamooth/dcalerts"
 
 [tool.setuptools]
 packages = ["dcalerts"]
-
-[project.classifiers]
-Programming-Language = "Python :: 3"
-License = "OSI Approved :: GNU GPLv3"
-Operating-System = "OS Independent"
