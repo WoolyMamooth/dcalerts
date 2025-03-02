@@ -45,7 +45,7 @@ settings={
     "after" : "After running"
 }
 ```
-You can also put in *lists*, *lists of lists*, and even *functions*. If you put in a list for a message all of it's contents will be casted to *string*, then concatenated and sent as one message. You can set the separating character under the name `separator` (by default it's `'\n'`). If you put in a function it will be executed, it's return value casted to *string* and added to the message. For example:
+You can also put in *lists*, *lists of lists*, and even *functions*. If you put in a list for a message all of it's contents will be casted to *string*, then concatenated and sent as one message. You can set the separating character under the name `separator` (by default it's `' '`). If you put in a function it will be executed, it's return value casted to *string* and added to the message. For example:
 ```python
 result_func():
     return "some return value"
@@ -94,6 +94,19 @@ foo = notify(settings)(foo)
 foo()
 ```
 ---
+
+### Notifier context manager
+This class allows you to send messages as part of a `with` block. It uses the same settings as `@notify` and behaves the same as well. It also has a `send` function where you can send messages the same way you specify before and after messages (you can use lists, functions, etc.) Example usage:
+```python
+from dcalerts import Notifier
+
+with Notifier(dcalerts_settings=settings) as notifier:
+    print("Doing stuff")
+    sleep(3)
+    notifier.send(["This message is from the 'with' block.", foo()])
+    sleep(3)
+```
+
 ### Utils
 
 The following utility functions are available in `dcalerts.utils`. They return text in a format that Discord interprets in a special way:
