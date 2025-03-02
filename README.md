@@ -1,6 +1,6 @@
 # dcalerts
 
-Provides a wrapper function and other utilities that let the user send Discord messages when their code execution starts or finishes.
+Provides utilities that let the user send Discord messages from code.
 
 ## Installation
 
@@ -8,65 +8,85 @@ You can install directly from GitHub:
 ```
 pip install git+https://github.com/WoolyMamooth/dcalerts
 ```
-## Usage
-
-### MessageHandler
-
-A simple class you can use to send messages to the same Discord channel.
+## TLDR
 ```python
-from dcalerts import MessageHandler, send_message
+from dcalerts import Notifier
 
-message_handler = MessageHandler("your webhook url here")
+dcalerts_settings={
+            "webhook":webhook_url,
+            "before":"Starting code execution",
+            "after":"Code finished",
+            "send_error":True
+        }
+
+with Notifier(dcalerts_settings) as notifier:
+    print("Doing stuff")
+```
+# Usage
+
+### Settings
+---
+`dcalerts` uses a simple `dict` to track what messages you want to send and where. In the code it is uniformly referred to as `dcalerts_settings`. It can have the following items:
+ - `webhook` : Can be either a `str` or a `MessageHandler` object. It should be the link you get from your Discord channel. You can learn how to make one [HERE](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks). This is where your messages will be sent to.
+ - `before` : Optional. This is the message that is sent before your given code starts execution. Used by *decorators* and *context managers*.
+ - `after` : Optional. This is the message that is sent after your given code finishes. Used by *decorators* and *context managers*.
+ - `separator` : Used to separate the multiple items in messages. (more on this below)
+ - `send_error` : Optional. If it is set to `True` any errors that stop the program will be sent to the `webhook` as well. `False` by default.
+- `error_message` : Optional. This will be the message sent together with the error text if an error is encountered. Default is `ERROR:`
+
+Messages can be *strings*, *lists*, *lists of lists*, or *functions*. If you use anything but the most basic sending functions your message will first pass through the `make_message` function. This will execute all functions in the message, cast everything to string and fuse together all items of the list in order putting the `separator` string between them. For example this is a valid message you could put in `after`:
+```python
+def result_function():
+    return ["Something something", 42]
+
+dcalerts_settings["after"] = ["Your code is done. Results:", code_block(result_function())]
+```
+### Simple messaging
+---
+For this you don't even need your `dcalerts_settings`. You can simply use your webhook url to send a message. But if you have a `dict` you can also use that:
+```python
+from dcalerts import send_message
+
+send_message(webhook_url, "This is a message.")
+
+# OR
+
+send_message(dcalerts_settings, "This is a message.")
+```
+If you want to send many messages to the same channel, but don't need anything fancy, you can use a `MessageHandler`:
+```python
+from dcalerts import MessageHandler
+
+message_handler = MessageHandler(webhook_url)
 message_handler.send("This is a message.")
 ```
-
-or you could just use `send_message`
-
+Keep in mind these only accept *strings*. If you want to send a fancy message this way, you should call `make_message` first.
 ```python
-send_message("your webhook url here", "This is a message.")
+send_message(webhook_url, make_message(["This is a message.", 42]))
 ```
-or
-```python
-dcalerts_settings={
-    "webhook" : "your webhook url here"
-}
-
-send_message(settings, "This is a message")
-```
+### Context manager
 ---
-### notify decorator
+The package offers a context manager class called `Notifier`. You can use this to send messages before, during and after code execution. Note that this class automatically uses `make_message` before sending anything. For example:
+```python
+from dcalerts import Notifier
+from time import sleep
 
-This decorator lets you send messages both before and after the execution of the function you use it on. If you don't set one of the messages it will not be sent, so you could for example only send a message after the execution.
-Put everything you want to send into a dictionary together with your webhook link. (NOTE: you can also pass a `MessageHandler` instead of a string in the place of the webhook url) Like so:
-```python
-settings={
-    "webhook" : "your webhook url here",
-    "before" : "Before running",
-    "after" : "After running"
-}
-```
-You can also put in *lists*, *lists of lists*, and even *functions*. If you put in a list for a message all of it's contents will be casted to *string*, then concatenated and sent as one message. You can set the separating character under the name `separator` (by default it's `' '`). If you put in a function it will be executed, it's return value casted to *string* and added to the message. For example:
-```python
-result_func():
-    return "some return value"
+def foo():
+    return 42
 
-settings={
-    "webhook" : "your webhook url here",
-    "before" : ["This", ["is", "before"]],
-    "after" : ["Results:", result_func()],
-    "separator" : "\t"
-}
+with Notifier(dcalerts_settings) as notifier:
+    # dcalerts_settings["before"] is sent here
+    print("Doing stuff.")
+    sleep(2)
+    notifier.send(["Partial result:",foo()])
+    print("Doing more stuff.")
+    sleep(2)
+    # dcalerts_settings["after"] is sent here
 ```
-Furthermore, you can specify if you want to also send error messages. By default `send_error` is set to `False` and `error_message` to `"ERROR"`.
-```python
-settings={
-    ...
-    "send_error" : True,
-    "error_message" : ["An error","occurred."]
-}
-```
+
+### Decorator
 ---
-Once you have your settings *dict*, you just have to pass it to your function under the name `dcalerts_settings`:
+There is also a decorator you can use to send messages before and after running your function. You can use this in multiple ways:
 ```python
 from dcalerts import notify
 from time import sleep
@@ -75,17 +95,17 @@ from time import sleep
 def foo(t):
     sleep(t)
 
-foo(10, dcalerts_settings=settings)
+foo(10, dcalerts_settings=dcalerts_settings)
 ``` 
-You can also use `notify` like this:
+Or:
 ```python
-@notify(dcalerts_settings=settings)
+@notify(dcalerts_settings=dcalerts_settings)
 def foo(t)
     sleep(t)
 
 foo(10)
 ```
-Or like this:
+Or:
 ```python
 def foo(t):
     sleep(t)
@@ -93,23 +113,11 @@ def foo(t):
 foo = notify(settings)(foo)
 foo()
 ```
----
-
-### Notifier context manager
-This class allows you to send messages as part of a `with` block. It uses the same settings as `@notify` and behaves the same as well. It also has a `send` function where you can send messages the same way you specify before and after messages (you can use lists, functions, etc.) Example usage:
-```python
-from dcalerts import Notifier
-
-with Notifier(dcalerts_settings=settings) as notifier:
-    print("Doing stuff")
-    sleep(3)
-    notifier.send(["This message is from the 'with' block.", foo()])
-    sleep(3)
-```
 
 ### Utils
+---
 
-The following utility functions are available in `dcalerts.utils`. They return text in a format that Discord interprets in a special way:
+The following utility functions are available in `dcalerts.utils`. They return text in a format that Discord interprets in a special way. Most of them use `make_message` to make it simpler to use them:
 
 - **create_timer(seconds_from_now)**: Returns a string which Discord reads as a timer to a given second.
 - **code_block(text, language="")**: Wraps text in a code block.

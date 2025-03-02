@@ -1,4 +1,5 @@
 import time
+from .messages import make_message
 
 def create_timer(seconds_from_now):
     """
@@ -13,60 +14,80 @@ def code_block(text:str, language:str=""):
     """
     Wraps text in a code block.
     """
+    if type(text)is not str:
+        text=make_message(text)
     return "```"+language+"\n"+text+"```"
 
 def inline_code(text:str):
     """
     Wraps text in inline code.
     """
+    if type(text)is not str:
+        text=make_message(text)
     return "`"+text+"`"
 
 def bold(text:str):
     """
     Makes text bold.
     """
+    if type(text)is not str:
+        text=make_message(text)
     return "**"+text+"**"
 
 def italic(text:str):
     """
     Makes text italic.
     """
+    if type(text)is not str:
+        text=make_message(text)
     return "*"+text+"*"
 
 def underline(text:str):
     """
     Underlines text.
     """
+    if type(text)is not str:
+        text=make_message(text)
     return "__"+text+"__"
 
 def strikethrough(text:str):
     """
     Strikes through text.
     """
+    if type(text)is not str:
+        text=make_message(text)
     return "~~"+text+"~~"
 
 def spoiler(text:str):
     """
     Makes text a spoiler.
     """
+    if type(text)is not str:
+        text=make_message(text)
     return "||"+text+"||"
 
 def quote(text:str):
     """
     Quotes text.
     """
+    if type(text)is not str:
+        text=make_message(text)
     return "> "+text
 
 def block_quote(text:str):
     """
     Quotes text in a block.
     """
+    if type(text)is not str:
+        text=make_message(text)
     return ">>> "+text
 
 def link(text:str, url:str):
     """
     Creates a hyperlink.
     """
+    if type(text)is not str:
+        text=make_message(text)
     return "["+text+"]("+url+")"
 
 def mention(user_id:str):
@@ -97,4 +118,6 @@ def header(text:str, level:int=1):
     """
     Creates a header.
     """
+    if type(text)is not str:
+        text=make_message(text)
     return "#"*level+" "+text
