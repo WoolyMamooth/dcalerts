@@ -22,9 +22,6 @@ Homepage = "https://github.com/WoolyMamooth/dcalerts"
 [tool.setuptools]
 packages = ["dcalerts"]
 
-[tool.setuptools.packages.find]
-include = ["dcalerts*"]
-
 [project.classifiers]
 Programming-Language = "Python :: 3"
 License = "OSI Approved :: GNU GPLv3"
