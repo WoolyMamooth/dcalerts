@@ -7,7 +7,7 @@ name = "dcalerts"
 version = "0.3.0"
 description = "A Python decorator to send Discord webhook notifications before and after function execution."
 authors = [
-    { name = "WoolyMamooth", email = "" }
+    { name = "WoolyMamooth" }
 ]
 license = { text = "GNU GPLv3" }
 readme = "README.md"
