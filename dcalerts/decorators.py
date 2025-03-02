@@ -1,4 +1,5 @@
 from .messages import MessageHandler
+from .utils import code_block
 from functools import wraps
 
 def notify_simple(func):
@@ -42,7 +43,9 @@ def notify_extended(func):
         \t"webhook" : WEBHOOK_URL,
         \t"before" : ["Before", "running", foo()],
         \t"after" : ["Results:", foo_results()],
-        \t"separator" : "\\t"
+        \t"separator" : "\\t",
+        \t"send_error" : True,
+        \t"error_message" : "An error occurred:"
     }\n
     If a message isn't given it will not be sent, so you can notify only after running.
     """
@@ -58,13 +61,20 @@ def notify_extended(func):
             message_handler.send(_make_message(before, list_item_sep=list_item_sep))
         # -------------------- #
 
-        result = func(*args, **kwargs)
+        try:
+            result = func(*args, **kwargs)
 
-        # ------ After ------ #
-        after=settings.get("after")
-        if after:
-            message_handler.send(_make_message(after, list_item_sep=list_item_sep))
-        # ------------------- #
+            # ------ After ------ #
+            after=settings.get("after")
+            if after:
+                message_handler.send(_make_message(after, list_item_sep=list_item_sep))
+            # ------------------- #
+
+        except Exception as e:
+            # Optionally handle error notifications
+            if settings.get("send_error"):
+                message_handler.send(_make_message([settings.get("error_message", "ERROR:"),code_block(str(e))], list_item_sep=list_item_sep))
+            raise
 
         return result
     
@@ -140,7 +150,7 @@ def notify(func=None, dcalerts_settings=None):
                 except Exception as e:
                     # Optionally handle error notifications
                     if effective_settings.get("send_error"):
-                        message_handler.send(_make_message([effective_settings.get("error_message", "ERROR:"),str(e)], list_item_sep=list_item_sep))
+                        message_handler.send(_make_message([effective_settings.get("error_message", "ERROR:"),code_block(str(e))], list_item_sep=list_item_sep))
                     raise
                 
             return wrapper
@@ -177,7 +187,7 @@ def notify(func=None, dcalerts_settings=None):
         except Exception as e:
             # Optionally handle error notifications
             if settings.get("send_error"):
-                message_handler.send(_make_message([settings.get("error_message", "ERROR:"),str(e)], list_item_sep=list_item_sep))
+                message_handler.send(_make_message([settings.get("error_message", "ERROR:"),code_block(str(e))], list_item_sep=list_item_sep))
             raise
             
     return wrapper
