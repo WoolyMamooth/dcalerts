@@ -30,9 +30,9 @@ with Notifier(dcalerts_settings) as notifier:
  - `webhook` : Can be either a `str` or a `MessageHandler` object. It should be the link you get from your Discord channel. You can learn how to make one [HERE](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks). This is where your messages will be sent to.
  - `before` : Optional. This is the message that is sent before your given code starts execution. Used by *decorators* and *context managers*.
  - `after` : Optional. This is the message that is sent after your given code finishes. Used by *decorators* and *context managers*.
- - `separator` : Used to separate the multiple items in messages. (more on this below)
+ - `separator` : Optional. Used to separate the multiple items in messages. (more on this below)
  - `send_error` : Optional. If it is set to `True` any errors that stop the program will be sent to the `webhook` as well. `False` by default.
-- `error_message` : Optional. This will be the message sent together with the error text if an error is encountered. Default is `ERROR:`
+- `error_message` : Optional. This will be the message sent together with the error text if an error is encountered. Default is `"ERROR:"`.
 
 Messages can be *strings*, *lists*, *lists of lists*, or *functions*. If you use anything but the most basic sending functions your message will first pass through the `make_message` function. This will execute all functions in the message, cast everything to string and fuse together all items of the list in order putting the `separator` string between them. For example this is a valid message you could put in `after`:
 ```python
@@ -43,7 +43,7 @@ dcalerts_settings["after"] = ["Your code is done. Results:", code_block(result_f
 ```
 ### Simple messaging
 ---
-For this you don't even need your `dcalerts_settings`. You can simply use your webhook url to send a message. But if you have a `dict` you can also use that:
+For this you don't even need your `dcalerts_settings`. You can simply use a webhook url to send a message. But if you have a `dict` you can also use that:
 ```python
 from dcalerts import send_message
 
@@ -110,7 +110,7 @@ Or:
 def foo(t):
     sleep(t)
 
-foo = notify(settings)(foo)
+foo = notify(dcalerts_settings)(foo)
 foo()
 ```
 
@@ -119,19 +119,19 @@ foo()
 
 The following utility functions are available in `dcalerts.utils`. They return text in a format that Discord interprets in a special way. Most of them use `make_message` to make it simpler to use them:
 
-- **create_timer(seconds_from_now)**: Returns a string which Discord reads as a timer to a given second.
-- **code_block(text, language="")**: Wraps text in a code block.
-- **inline_code(text)**: Wraps text in inline code.
-- **bold(text)**: Makes text bold.
-- **italic(text)**: Makes text italic.
-- **underline(text)**: Underlines text.
-- **strikethrough(text)**: Strikes through text.
-- **spoiler(text)**: Makes text a spoiler.
-- **quote(text)**: Quotes text.
-- **block_quote(text)**: Quotes text in a block.
-- **link(text, url)**: Creates a hyperlink.
-- **mention(user_id)**: Mentions a user.
-- **channel_mention(channel_id)**: Mentions a channel.
-- **role_mention(role_id)**: Mentions a role.
-- **emoji(emoji_id)**: Adds an emoji.
-- **header(text, level=1)**: Creates a header.
+- `create_timer(seconds_from_now)` : Returns a string which Discord reads as a timer to a given second.
+- `code_block(text, language="")` : Wraps text in a code block.
+- `inline_code(text)` : Wraps text in inline code.
+- `bold(text)` : Makes text bold.
+- `italic(text)` : Makes text italic.
+- `underline(text)` : Underlines text.
+- `strikethrough(text)` : Strikes through text.
+- `spoiler(text)` : Makes text a spoiler.
+- `quote(text)` : Quotes text.
+- `block_quote(text)` : Quotes text in a block.
+- `link(text, url)` : Creates a hyperlink.
+- `mention(user_id)` : Mentions a user.
+- `channel_mention(channel_id)` : Mentions a channel.
+- `role_mention(role_id)` : Mentions a role.
+- `emoji(emoji_id)` : Adds an emoji.
+- `header(text, level=1)` : Creates a header.
