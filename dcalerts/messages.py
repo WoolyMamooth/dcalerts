@@ -44,3 +44,25 @@ def make_message(input, list_item_sep=" "):
         final_message+=str(input)
 
     return final_message
+
+class DcalertsSettings(dict):
+    """A dictionary-like class that enforces a required 'webhook' key and allows optional keys with defaults."""
+
+    def __init__(self, webhook, before=None, after=None, separator=" ", send_error=False, error_message="ERROR:"):
+        if not webhook:
+            raise ValueError("The 'webhook' parameter is required.")
+
+        super().__init__({
+            "webhook": webhook,
+            "before": before,
+            "after": after,
+            "separator": separator,
+            "send_error": send_error,
+            "error_message": error_message
+        })
+
+    def __setitem__(self, key, value):
+        allowed_keys = {"webhook", "before", "after", "separator", "send_error", "error_message"}
+        if key not in allowed_keys:
+            raise KeyError(f"Key '{key}' is not allowed. Allowed keys: {allowed_keys}")
+        super().__setitem__(key, value)
