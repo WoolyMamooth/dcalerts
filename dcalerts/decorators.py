@@ -3,10 +3,11 @@ from .utils import code_block
 from functools import wraps
 
 def notify_simple(func):
-    """
-    Decorator that sends a Discord message before and after the function is run.\n
+    """Decorator that sends a Discord message before and after the function is run.
+
+    ---
     Include a ***dcalerts_settings*** dict to set messages and url, for example:\n
-    settings={\n
+    dcalerts_settings={\n
         \t"webhook" : WEBHOOK_URL,
         \t"before" : "Before running",
         \t"after" : "After running"
@@ -33,13 +34,14 @@ def notify_simple(func):
     return wrapper
 
 def notify_extended(func):
-    """
-    Decorator that sends a Discord message before and after the function is run.
+    """Decorator that sends a Discord message before and after the function is run.
+
+    ---
     Include a ***dcalerts_settings*** dict to set messages and url.
     Accepts lists and functions as messages, which will be evaluated and sent together as one message.
     You can specify a list item separator as well.
     For example:\n
-    settings={\n
+    dcalerts_settings={\n
         \t"webhook" : WEBHOOK_URL,
         \t"before" : ["Before", "running", foo()],
         \t"after" : ["Results:", foo_results()],
@@ -81,31 +83,30 @@ def notify_extended(func):
     return wrapper
 
 def notify(func=None, dcalerts_settings=None):
-    """
-    Decorator that sends a Discord message before and after the function is run.
-    Include a ***dcalerts_settings*** dict to set messages and url.
-    Accepts lists and functions as messages, which will be evaluated and sent together as one message.
-    You can specify a list item separator and send error messages as well.
-    For example:\n
-    settings={\n
-        \t"webhook" : WEBHOOK_URL,
-        \t"before" : ["Before", "running", foo()],
-        \t"after" : ["Results:", foo_results()],
-        \t"separator" : "\\t",
-        \t"send_error" : True,
-        \t"error_message" : "An error occurred:"
-    }\n
-    If a message isn't given it will not be sent. If an error occurs, the error message will be sent.
-    This function can also be used in multiple different ways:\n
-    @notify(settings)\n
-    def foo():\n
-    Or:\n
-    @notify\n
-    def foo()\n
-    foo(dcalerts_settings=settings)\n
-    Or:\n
-    foo=notify(settings)(foo)\n
+    """Decorator that sends a Discord message before and after the function is run.
+    Include a **dcalerts_settings = DcalertsSettings()** object to set messages, url and other things.
+
+    This function can be used in multiple ways:\n
+    ```
+    @notify(dcalerts_settings)
+    def foo():
+        pass
     foo()
+    ```\n
+    Or:\n
+    ```
+    @notify
+    def foo():
+        pass
+    foo(dcalerts_settings=dcalerts_settings)
+    ```
+    Or:\n
+    ```
+    def foo():
+        pass
+    foo=notify(dcalerts_settings)(foo)
+    foo()
+    ```
     """
     # Handle case where settings are provided directly
     if func is None or not callable(func):
@@ -150,7 +151,7 @@ def notify(func=None, dcalerts_settings=None):
                 except Exception as e:
                     # Optionally handle error notifications
                     if effective_settings.get("send_error"):
-                        message_handler.send(make_message([effective_settings.get("error_message", "ERROR:"),code_block(str(e))], list_item_sep=list_item_sep))
+                        message_handler.send(make_message([effective_settings.get("error_message", "ERROR:"), code_block(f"{type(e).__name__}: {e}")], list_item_sep=list_item_sep))
                     raise
                 
             return wrapper

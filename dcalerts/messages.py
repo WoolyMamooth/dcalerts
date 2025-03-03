@@ -46,7 +46,32 @@ def make_message(input, list_item_sep=" "):
     return final_message
 
 class DcalertsSettings(dict):
-    """A dictionary-like class that enforces a required 'webhook' key and allows optional keys with defaults."""
+    """A dictionary-like class used to set the parameters in other `dcalerts` functions.
+    
+    This is where you can set what messages you want to send and to what webhook.
+    Accepts lists and functions as messages, which will be evaluated and sent together as one string.
+    You can specify a list item separator and send error messages as well.
+    If a message isn't given it will not be sent. If an error occurs, the error message will be sent.
+    
+    Attributes:
+        webhook (str | MessageHandler): Required webhook URL you get from Discord.
+        before (str | list | func, optional): A value to be included before the main content (default: None).
+        after (str | list | func, optional): A value to be appended after the main content (default: None).
+        separator (str, optional): A string used to separate elements (default: " ").
+        send_error (bool, optional): Determines whether to send an error message (default: False).
+        error_message (str | list | func, optional): The default error message content (default: "ERROR:").
+
+    Example Usage:
+
+    DcalertsSettings(
+        webhook = webhook_url,
+        before = "Starting code execution",
+        after = ["Code finished. Results:", code_block(result_func())],
+        separator='\\n',
+        send_error = True,
+        error_message="An error occured:"
+    )
+    """
 
     def __init__(self, webhook, before=None, after=None, separator=" ", send_error=False, error_message="ERROR:"):
         if not webhook:

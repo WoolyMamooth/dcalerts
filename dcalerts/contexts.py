@@ -2,9 +2,11 @@ from .messages import MessageHandler, make_message
 from .utils import code_block
 
 class Notifier:
+    """Context manager class with built in messaging and error handling.
+    
+    Requires a DcalertsSettings object to set parameters.
+    """
     def __init__(self,dcalerts_settings):
-        if "webhook" not in dcalerts_settings:
-            raise ValueError("Missing webhook in dcalerts_settings")
         
         self.messagehandler=MessageHandler(dcalerts_settings.get("webhook"))
         self.before=dcalerts_settings.get("before")
@@ -20,7 +22,7 @@ class Notifier:
 
     def __exit__(self, exc_type, exc_val, traceback):
         if exc_type is not None and self.send_error:
-            error_message = ["ERROR:" if self.error_message is None else self.error_message, code_block(str(exc_val))]
+            error_message = ["ERROR:" if self.error_message is None else self.error_message, code_block(str(exc_type.__name__)+": "+str(exc_val))]
             self.send(error_message)
             return False
         
