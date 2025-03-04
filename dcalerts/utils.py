@@ -1,5 +1,5 @@
 import time
-from .messages import make_message
+from .messages import Specialsep
 
 def create_timer(seconds_from_now):
     """
@@ -14,110 +14,88 @@ def code_block(text:str, language:str=""):
     """
     Wraps text in a code block.
     """
-    if type(text)is not str:
-        text=make_message(text)
-    return "```"+language+"\n"+text+"```"
+    return [Specialsep(""), "```", language, "\n", text, "```"]
 
 def inline_code(text:str):
     """
     Wraps text in inline code.
     """
-    if type(text)is not str:
-        text=make_message(text)
-    return "`"+text+"`"
+    return [Specialsep(""), "`", text, "`"]
 
 def bold(text:str):
     """
     Makes text bold.
     """
-    if type(text)is not str:
-        text=make_message(text)
-    return "**"+text+"**"
+    return [Specialsep(""), "**", text, "**"]
 
 def italic(text:str):
     """
     Makes text italic.
     """
-    if type(text)is not str:
-        text=make_message(text)
-    return "*"+text+"*"
+    return [Specialsep(""), "*", text, "*"]
 
 def underline(text:str):
     """
     Underlines text.
     """
-    if type(text)is not str:
-        text=make_message(text)
-    return "__"+text+"__"
+    return [Specialsep(""), "__", text, "__"]
 
 def strikethrough(text:str):
     """
     Strikes through text.
     """
-    if type(text)is not str:
-        text=make_message(text)
-    return "~~"+text+"~~"
+    return [Specialsep(""), "~~", text, "~~"]
 
 def spoiler(text:str):
     """
     Makes text a spoiler.
     """
-    if type(text)is not str:
-        text=make_message(text)
-    return "||"+text+"||"
+    return [Specialsep(""), "||", text, "||"]
 
 def quote(text:str):
     """
     Quotes text.
     """
-    if type(text)is not str:
-        text=make_message(text)
-    return "> "+text
+    return [Specialsep(""), "> ", text]
 
 def block_quote(text:str):
     """
     Quotes text in a block.
     """
-    if type(text)is not str:
-        text=make_message(text)
-    return ">>> "+text
+    return [Specialsep(""), ">>> ", text]
 
 def link(text:str, url:str):
     """
     Creates a hyperlink.
     """
-    if type(text)is not str:
-        text=make_message(text)
-    return "["+text+"]("+url+")"
+    return [Specialsep(""), "[", text, "](", url, ")"]
 
 def mention(user_id:str):
     """
     Mentions a user.
     """
-    return "@"+user_id
+    return [Specialsep(""), "@", user_id]
 
 def channel_mention(channel_id:str):
     """
     Mentions a channel.
     """
-    return "#"+channel_id
+    return [Specialsep(""), "#", channel_id]
 
 def role_mention(role_id:str):
     """
     Mentions a role.
     """
-    return "@"+role_id
+    return [Specialsep(""), "@", role_id]
 
 def emoji(emoji_id:str):
     """
     Adds an emoji.
     """
-    return ":"+emoji_id+":"
+    return [Specialsep(""), ":", emoji_id, ":"]
 
 def header(text:str, level:int=1):
     """
     Creates a header.
     """
-    if type(text)is not str:
-        text=make_message(text)
-    return "#"*level+" "+text
+    return [Specialsep(""), "#"*level, " ", text]

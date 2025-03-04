@@ -1,4 +1,4 @@
-from .messages import MessageHandler, make_message
+from .messages import MessageHandler
 from .utils import code_block
 from functools import wraps
 
@@ -55,12 +55,12 @@ def notify_extended(func):
     def wrapper(*args, **kwargs):
         settings=kwargs.pop("dcalerts_settings")
         message_handler=MessageHandler(settings["webhook"])
-        list_item_sep=settings.get("separator", " ")
+        list_item_sep=settings.get("separator", "")
 
         # ------ Before ------ #
         before=settings.get("before")
         if before:
-            message_handler.send(make_message(before, list_item_sep=list_item_sep))
+            message_handler.send(before, list_item_sep=list_item_sep)
         # -------------------- #
 
         try:
@@ -69,13 +69,13 @@ def notify_extended(func):
             # ------ After ------ #
             after=settings.get("after")
             if after:
-                message_handler.send(make_message(after, list_item_sep=list_item_sep))
+                message_handler.send(after, list_item_sep=list_item_sep)
             # ------------------- #
 
         except Exception as e:
             # Optionally handle error notifications
             if settings.get("send_error"):
-                message_handler.send(make_message([settings.get("error_message", "ERROR:"),code_block(str(e))], list_item_sep=list_item_sep))
+                message_handler.send([settings.get("error_message", "ERROR:"),code_block(str(e))], list_item_sep=list_item_sep)
             raise
 
         return result
@@ -130,12 +130,12 @@ def notify(func=None, dcalerts_settings=None):
                     raise ValueError("Missing webhook in dcalerts_settings")
                 
                 message_handler = MessageHandler(effective_settings["webhook"])
-                list_item_sep = effective_settings.get("separator", " ")
+                list_item_sep = effective_settings.get("separator", "")
 
                 # ------ Before ------ #
                 before = effective_settings.get("before")
                 if before:
-                    message_handler.send(make_message(before, list_item_sep=list_item_sep))
+                    message_handler.send(before, list_item_sep=list_item_sep)
                 # -------------------- #
 
                 try:
@@ -144,14 +144,14 @@ def notify(func=None, dcalerts_settings=None):
                     # ------ After ------ #
                     after = effective_settings.get("after")
                     if after:
-                        message_handler.send(make_message(after, list_item_sep=list_item_sep))
+                        message_handler.send(after, list_item_sep=list_item_sep)
                     # ------------------- #
                     
                     return result
                 except Exception as e:
                     # Optionally handle error notifications
                     if effective_settings.get("send_error"):
-                        message_handler.send(make_message([effective_settings.get("error_message", "ERROR:"), code_block(f"{type(e).__name__}: {e}")], list_item_sep=list_item_sep))
+                        message_handler.send([effective_settings.get("error_message", "ERROR:"), code_block(f"{type(e).__name__}: {e}")], list_item_sep=list_item_sep)
                     raise
                 
             return wrapper
@@ -167,12 +167,12 @@ def notify(func=None, dcalerts_settings=None):
             raise ValueError("Missing webhook in dcalerts_settings")
             
         message_handler = MessageHandler(settings["webhook"])
-        list_item_sep = settings.get("separator", " ")
+        list_item_sep = settings.get("separator", "")
 
         # ------ Before ------ #
         before = settings.get("before")
         if before:
-            message_handler.send(make_message(before, list_item_sep=list_item_sep))
+            message_handler.send(before, list_item_sep=list_item_sep)
         # -------------------- #
 
         try:
@@ -181,14 +181,14 @@ def notify(func=None, dcalerts_settings=None):
             # ------ After ------ #
             after = settings.get("after")
             if after:
-                message_handler.send(make_message(after, list_item_sep=list_item_sep))
+                message_handler.send(after, list_item_sep=list_item_sep)
             # ------------------- #
             
             return result
         except Exception as e:
             # Optionally handle error notifications
             if settings.get("send_error"):
-                message_handler.send(make_message([settings.get("error_message", "ERROR:"),code_block(str(e))], list_item_sep=list_item_sep))
+                message_handler.send([settings.get("error_message", "ERROR:"),code_block(str(e))], list_item_sep=list_item_sep)
             raise
             
     return wrapper

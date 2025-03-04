@@ -10,26 +10,27 @@ class MessageHandler:
         else:
             self.webhook_url=webhook_url
 
-    def send(self, message):
+    def send(self, message, list_item_sep):
         """
         Send a message to the objects given webhook.
         """
-        send_message(webhook_url=self.webhook_url, message=message)
+        send_message(webhook_url=self.webhook_url, message=message, list_item_sep=list_item_sep)
 
-def send_message(webhook_url:str|dict, message:str):
+def send_message(webhook_url:str|dict, message:str, list_item_sep:str=""):
     """
     Send a message to a Discord webhook.
     """
     if( type(webhook_url)== dict):
         webhook_url=webhook_url["webhook"]
-    payload = {"content": str(message)}
+    payload = {"content": make_message(message, list_item_sep=list_item_sep)}
     requests.post(webhook_url, json=payload)
 
-def make_message(input, list_item_sep=" "):
+def make_message(input, list_item_sep=""):
     """
     Converts strings, lists of strings, functions and other inputs into a single string and returns it.
     """
     final_message=""
+    original_list_item_sep=list_item_sep
     
     if type(input)==str:
         final_message+=input
@@ -39,71 +40,19 @@ def make_message(input, list_item_sep=" "):
 
     elif type(input)==list:
         for item in input:
+            if type(item)==Specialsep: # this exception has to exist because of how utils.py functions operate
+                list_item_sep=item.separator
+                continue
             final_message+=make_message(item, list_item_sep=list_item_sep)+list_item_sep
     else:
         final_message+=str(input)
 
     return final_message
 
-class DcalertsSettings(dict):
-    """A dictionary-like class used to set the parameters in other `dcalerts` functions.
-    
-    This is where you can set what messages you want to send and to what webhook.
-    Accepts lists and functions as messages, which will be evaluated and sent together as one string.
-    You can specify a list item separator and send error messages as well.
-    If a message isn't given it will not be sent. If an error occurs, the error message will be sent.
-    
-    Attributes:
-        webhook (str | MessageHandler): Required webhook URL you get from Discord.
-        before (str | list | func, optional): A value to be included before the main content (default: None).
-        after (str | list | func, optional): A value to be appended after the main content (default: None).
-        separator (str, optional): A string used to separate elements (default: " ").
-        send_error (bool, optional): Determines whether to send an error message (default: False).
-        error_message (str | list | func, optional): The default error message content (default: "ERROR:").
+class Specialsep():
+    """Class used to define separator character exceptions for `makemessage`."""
+    def __init__(self, separator=""):
+        self.separator = separator
 
-    Example Usage:
-
-    DcalertsSettings(
-        webhook = webhook_url,
-        before = "Starting code execution",
-        after = ["Code finished. Results:", code_block(result_func())],
-        separator='\\n',
-        send_error = True,
-        error_message="An error occured:"
-    )
-    """
-
-    allowed_keys = {"webhook", "before", "after", "separator", "send_error", "error_message"}
-
-    def __init__(self, webhook, before=None, after=None, separator=" ", send_error=False, error_message="ERROR:"):
-        if not webhook:
-            raise ValueError("You have to set a webhook.")
-        
-        #initialization with aother dict
-        if type(webhook)==dict:
-            hook=webhook.get("webhook")
-            if hook is None:
-                raise ValueError("You have to set a webhook.")
-            super().__init__({
-                "webhook": hook,
-                "before": webhook.get("before", before),
-                "after": webhook.get("after", after),
-                "separator": webhook.get("separator", separator),
-                "send_error": webhook.get("send_error", send_error),
-                "error_message": webhook.get("error_message", error_message)
-            })
-        #initialization with parameters
-        else:
-            super().__init__({
-                "webhook": webhook,
-                "before": before,
-                "after": after,
-                "separator": separator,
-                "send_error": send_error,
-                "error_message": error_message
-            })
-
-    def __setitem__(self, key, value):
-        if key not in self.allowed_keys:
-            raise KeyError(f"Key '{key}' is not allowed. Allowed keys: {self.allowed_keys}")
-        super().__setitem__(key, value)
+    def separator(self):
+        return self.separator

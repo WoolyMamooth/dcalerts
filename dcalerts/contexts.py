@@ -1,4 +1,4 @@
-from .messages import MessageHandler, make_message
+from .messages import MessageHandler
 from .utils import code_block
 
 class Notifier:
@@ -11,7 +11,7 @@ class Notifier:
         self.messagehandler=MessageHandler(dcalerts_settings.get("webhook"))
         self.before=dcalerts_settings.get("before")
         self.after=dcalerts_settings.get("after")
-        self.list_item_sep = dcalerts_settings.get("separator", " ")
+        self.list_item_sep = dcalerts_settings.get("separator", "")
         self.send_error=dcalerts_settings.get("send_error")
         self.error_message=dcalerts_settings.get("error_message")
 
@@ -30,5 +30,4 @@ class Notifier:
             self.send(self.after)
     
     def send(self,message):
-        message=make_message(message, self.list_item_sep)
-        self.messagehandler.send(message)
+        self.messagehandler.send(message, self.list_item_sep)
