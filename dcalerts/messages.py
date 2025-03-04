@@ -1,4 +1,5 @@
 import requests
+from .settings import DEFAULTS
 
 class MessageHandler:
     """
@@ -16,7 +17,7 @@ class MessageHandler:
         """
         send_message(webhook_url=self.webhook_url, message=message, list_item_sep=list_item_sep)
 
-def send_message(webhook_url:str|dict, message:str, list_item_sep:str=""):
+def send_message(webhook_url:str|dict, message:str, list_item_sep:str=DEFAULTS["separator"]):
     """
     Send a message to a Discord webhook.
     """
@@ -25,7 +26,7 @@ def send_message(webhook_url:str|dict, message:str, list_item_sep:str=""):
     payload = {"content": make_message(message, list_item_sep=list_item_sep)}
     requests.post(webhook_url, json=payload)
 
-def make_message(input, list_item_sep=""):
+def make_message(input, list_item_sep=DEFAULTS["separator"]):
     """
     Converts strings, lists of strings, functions and other inputs into a single string and returns it.
     """

@@ -1,19 +1,20 @@
 from .messages import MessageHandler
 from .utils import code_block
+from .settings import DEFAULTS
 
 class Notifier:
     """Context manager class with built in messaging and error handling.
     
-    Requires a DcalertsSettings object to set parameters.
+    Requires a `DcalertsSettings` object to set parameters.
     """
-    def __init__(self,dcalerts_settings):
+    def __init__(self,dcalerts_settings:dict):
         
         self.messagehandler=MessageHandler(dcalerts_settings.get("webhook"))
-        self.before=dcalerts_settings.get("before")
-        self.after=dcalerts_settings.get("after")
-        self.list_item_sep = dcalerts_settings.get("separator", "")
-        self.send_error=dcalerts_settings.get("send_error")
-        self.error_message=dcalerts_settings.get("error_message")
+        self.before=dcalerts_settings.get("before", DEFAULTS["before"])
+        self.after=dcalerts_settings.get("after", DEFAULTS["after"])
+        self.list_item_sep = dcalerts_settings.get("separator", DEFAULTS["separator"])
+        self.send_error=dcalerts_settings.get("send_error", DEFAULTS["send_error"])
+        self.error_message=dcalerts_settings.get("error_message", DEFAULTS["error_message"])
 
     def __enter__(self):
         if self.before:

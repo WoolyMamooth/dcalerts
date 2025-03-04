@@ -1,3 +1,11 @@
+DEFAULTS={
+    "before":None,
+    "after":None,
+    "separator":"\n",
+    "send_error":False,
+    "error_message":"ERROR:"
+}
+
 class DcalertsSettings(dict):
     """A dictionary-like class used to set the parameters in other `dcalerts` functions.
     
@@ -28,7 +36,7 @@ class DcalertsSettings(dict):
 
     allowed_keys = {"webhook", "before", "after", "separator", "send_error", "error_message"}
 
-    def __init__(self, webhook, before=None, after=None, separator=" ", send_error=False, error_message="ERROR:"):
+    def __init__(self, webhook, before=DEFAULTS["before"], after=DEFAULTS["after"], separator=DEFAULTS["separator"], send_error=DEFAULTS["send_error"], error_message=DEFAULTS["error_message"]):
         if not webhook:
             raise ValueError("You have to set a webhook.")
         

@@ -1,6 +1,7 @@
 from .messages import MessageHandler
 from .utils import code_block
 from functools import wraps
+from .settings import DEFAULTS
 
 def notify_simple(func):
     """Decorator that sends a Discord message before and after the function is run.
@@ -16,7 +17,7 @@ def notify_simple(func):
     """
     @wraps(func)
     def wrapper(*args, **kwargs):
-        settings=kwargs.pop("dcalerts_settings")
+        settings=kwargs.pop("dcalerts_settings", DEFAULTS)
         message_handler=MessageHandler(settings["webhook"])
         message_before=settings.get("before")
         message_after=settings.get("after")
@@ -53,9 +54,9 @@ def notify_extended(func):
     """
     @wraps(func)
     def wrapper(*args, **kwargs):
-        settings=kwargs.pop("dcalerts_settings")
+        settings=kwargs.pop("dcalerts_settings", DEFAULTS)
         message_handler=MessageHandler(settings["webhook"])
-        list_item_sep=settings.get("separator", "")
+        list_item_sep=settings.get("separator")
 
         # ------ Before ------ #
         before=settings.get("before")
@@ -75,7 +76,7 @@ def notify_extended(func):
         except Exception as e:
             # Optionally handle error notifications
             if settings.get("send_error"):
-                message_handler.send([settings.get("error_message", "ERROR:"),code_block(str(e))], list_item_sep=list_item_sep)
+                message_handler.send([settings.get("error_message"),code_block(str(e))], list_item_sep=list_item_sep)
             raise
 
         return result
@@ -117,7 +118,7 @@ def notify(func=None, dcalerts_settings=None):
             @wraps(f)
             def wrapper(*args, **kwargs):
                 # Get settings from kwargs if present, otherwise use empty dict
-                settings = kwargs.pop("dcalerts_settings", {})
+                settings = kwargs.pop("dcalerts_settings", DEFAULTS)
 
                 # Combine settings with priority to explicitly passed kwargs
                 effective_settings = {}
@@ -130,7 +131,7 @@ def notify(func=None, dcalerts_settings=None):
                     raise ValueError("Missing webhook in dcalerts_settings")
                 
                 message_handler = MessageHandler(effective_settings["webhook"])
-                list_item_sep = effective_settings.get("separator", "")
+                list_item_sep = effective_settings.get("separator")
 
                 # ------ Before ------ #
                 before = effective_settings.get("before")
@@ -160,14 +161,14 @@ def notify(func=None, dcalerts_settings=None):
     # Handle case where @notify is used without parentheses
     @wraps(func)
     def wrapper(*args, **kwargs):
-        settings = kwargs.pop("dcalerts_settings")
+        settings = kwargs.pop("dcalerts_settings", DEFAULTS)
         
         # Make sure webhook exists
         if "webhook" not in settings:
             raise ValueError("Missing webhook in dcalerts_settings")
             
         message_handler = MessageHandler(settings["webhook"])
-        list_item_sep = settings.get("separator", "")
+        list_item_sep = settings.get("separator")
 
         # ------ Before ------ #
         before = settings.get("before")
@@ -188,7 +189,7 @@ def notify(func=None, dcalerts_settings=None):
         except Exception as e:
             # Optionally handle error notifications
             if settings.get("send_error"):
-                message_handler.send([settings.get("error_message", "ERROR:"),code_block(str(e))], list_item_sep=list_item_sep)
+                message_handler.send([settings.get("error_message"),code_block(str(e))], list_item_sep=list_item_sep)
             raise
             
     return wrapper
