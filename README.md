@@ -34,7 +34,7 @@ with Notifier(dcalerts_settings) as notifier:
  - `send_error` : Optional. If it is set to `True` any errors that stop the program will be sent to the `webhook` as well. `False` by default.
  - `error_message` : Optional. This will be the message sent together with the error text if an error is encountered. Default is `"ERROR:"`.
 
-Messages can be *strings*, *lists*, *lists of lists*, or *functions*. If you use anything but the most basic sending functions your message will first pass through the `make_message` function. This will execute all functions in the message, cast everything to string and fuse together all items of the list in order putting the `separator` string between them. For example this is a valid message you could put in `after`:
+Messages can be *strings*, *lists*, *lists of lists*, or *functions*. Your message will always pass through the `make_message()` function. This will execute all functions in the message, cast everything to string and fuse together all items of the list in order putting the `separator` string between them. For example this is a valid message you could put in `after`:
 ```python
 def result_function():
     return ["Something something", 42]
@@ -66,10 +66,10 @@ message_handler = MessageHandler(dcalerts_settings)
 message_handler.send("This is a message.")
 ```
 
-Keep in mind these only accept *strings*. If you want to send a fancy message this way, you should call `make_message` first.
+These also use `make_message`, so you can complicate messages as much as you like
 
 ```python
-send_message(webhook_url, make_message(["This is a message.", 42]))
+send_message(webhook_url, ["This is a message.", [42, result_function]])
 ```
 
 ### Context manager
@@ -143,3 +143,12 @@ The following utility functions are available in `dcalerts.utils`. They return t
 - `role_mention(role_id)` : Mentions a role.
 - `emoji(emoji_id)` : Adds an emoji.
 - `header(text, level=1)` : Creates a header.
+
+## Misc
+
+There is a `Specialsep` class used internally that changes the `separator` character mid-message. This is mainly used by the `utils` functions, because their output has to be formatted in a special way. (for example Discord understands emojis if you write their name like this: `:emoji:`, so we can't have a whitespace after the `:` character). If you want to, you can use it like this:
+```python
+from dcalerts.messages import Specialsep
+
+send_message(webhook, ["This is a message", [Specialsep("\n"),"Everything in", "this list", "is a new line"], "but not this."], list_item_sep=" ")
+```
