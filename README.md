@@ -39,7 +39,7 @@ Messages can be *strings*, *lists*, *lists of lists*, or *functions*. If you use
 def result_function():
     return ["Something something", 42]
 
-dcalerts_settings["after"] = ["Your code is done. Results:", code_block(result_function())]
+dcalerts_settings["after"] = ["Your code is done. Results:", result_function]
 ```
 ### Simple messaging
 ---
@@ -86,7 +86,7 @@ with Notifier(dcalerts_settings) as notifier:
     # dcalerts_settings["before"] is sent here
     print("Doing stuff.")
     sleep(2)
-    notifier.send(["Partial result:",foo()])
+    notifier.send(["Partial result:",foo])
     print("Doing more stuff.")
     sleep(2)
     # dcalerts_settings["after"] is sent here

@@ -21,7 +21,7 @@ def send_message(webhook_url:str|dict, message:str):
     Send a message to a Discord webhook.
     """
     if( type(webhook_url)== dict):
-        webhook_url=webhook_url["webhook_url"]
+        webhook_url=webhook_url["webhook"]
     payload = {"content": str(message)}
     requests.post(webhook_url, json=payload)
 
@@ -73,21 +73,37 @@ class DcalertsSettings(dict):
     )
     """
 
+    allowed_keys = {"webhook", "before", "after", "separator", "send_error", "error_message"}
+
     def __init__(self, webhook, before=None, after=None, separator=" ", send_error=False, error_message="ERROR:"):
         if not webhook:
-            raise ValueError("The 'webhook' parameter is required.")
-
-        super().__init__({
-            "webhook": webhook,
-            "before": before,
-            "after": after,
-            "separator": separator,
-            "send_error": send_error,
-            "error_message": error_message
-        })
+            raise ValueError("You have to set a webhook.")
+        
+        #initialization with aother dict
+        if type(webhook)==dict:
+            hook=webhook.get("webhook")
+            if hook is None:
+                raise ValueError("You have to set a webhook.")
+            super().__init__({
+                "webhook": hook,
+                "before": webhook.get("before", before),
+                "after": webhook.get("after", after),
+                "separator": webhook.get("separator", separator),
+                "send_error": webhook.get("send_error", send_error),
+                "error_message": webhook.get("error_message", error_message)
+            })
+        #initialization with parameters
+        else:
+            super().__init__({
+                "webhook": webhook,
+                "before": before,
+                "after": after,
+                "separator": separator,
+                "send_error": send_error,
+                "error_message": error_message
+            })
 
     def __setitem__(self, key, value):
-        allowed_keys = {"webhook", "before", "after", "separator", "send_error", "error_message"}
-        if key not in allowed_keys:
-            raise KeyError(f"Key '{key}' is not allowed. Allowed keys: {allowed_keys}")
+        if key not in self.allowed_keys:
+            raise KeyError(f"Key '{key}' is not allowed. Allowed keys: {self.allowed_keys}")
         super().__setitem__(key, value)
