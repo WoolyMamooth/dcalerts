@@ -1,6 +1,6 @@
 # dcalerts
 
-Provides utilities that let the user send Discord messages from code.
+Provides different utilities, decorators and classes that let the user send Discord messages from code.
 
 ## Installation
 
@@ -8,7 +8,12 @@ You can install directly from GitHub:
 ```
 pip install git+https://github.com/WoolyMamooth/dcalerts
 ```
-## TLDR
+Or the latest stable release from PyPI:
+```
+pip install dcalerts
+```
+
+## Quickstart
 ```python
 from dcalerts import DcalertsSettings, Notifier
 
