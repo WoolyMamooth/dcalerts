@@ -1,7 +1,7 @@
 DEFAULTS={
     "before":None,
     "after":None,
-    "separator":"\n",
+    "separator":" ",
     "send_error":False,
     "error_message":"ERROR:"
 }

@@ -79,22 +79,36 @@ send_message(webhook_url, ["This is a message.", [42, result_function]])
 
 ### Context manager
 ---
-The package offers a context manager class called `Notifier`. You can use this to send messages before, during and after code execution. Note that this class automatically uses `make_message` before sending anything. For example:
+The package offers a context manager class called `Notifier`. You can use this to send messages before, during and after code execution. For example:
 ```python
-from dcalerts import Notifier
-from time import sleep
+from dcalerts import Notifier, DcalertsSettings
+from dcalerts.utils import code_block
 
-def foo():
-    return 42
+class Testclass:
+    def __init__(self, num):
+        self.num = num
+
+    def get_num(self):
+        return self.num
+
+testobj = Testclass(42)
+
+dcalerts_settings=DcalertsSettings(
+    webhook = webhook_url,
+    before = "Starting code.",
+    after = ["Code finished. Result:", code_block(testobj.get_num)],
+)
 
 with Notifier(dcalerts_settings) as notifier:
-    # dcalerts_settings["before"] is sent here
+    # dcalerts_settings["before"] is sent here. The message will be: "Starting code."
     print("Doing stuff.")
-    sleep(2)
-    notifier.send(["Partial result:",foo])
+    # we change testobj.num here
+    testobj.num = 43
+    notifier.send(["Partial result:",testobj.get_num]) # The message will be: "Partial result: 43"
     print("Doing more stuff.")
-    sleep(2)
-    # dcalerts_settings["after"] is sent here
+    # we change testobj.num again
+    testobj.num = 44
+    # dcalerts_settings["after"] is sent here. The message will be: "Code finished. Result: 44"
 ```
 
 ### Decorator
@@ -150,6 +164,14 @@ The following utility functions are available in `dcalerts.utils`. They return t
 - `header(text, level=1)` : Creates a header.
 
 ## Misc
+---
+To check the default value of any of the settings, you can use the `DEFAULTS` dictionary.
+
+```python
+from dcalerts import DEFAULTS
+
+print(DEFAULTS)
+```
 
 There is a `Specialsep` class used internally that changes the `separator` character mid-message. This is mainly used by the `utils` functions, because their output has to be formatted in a special way. (for example Discord understands emojis if you write their name like this: `:emoji:`, so we can't have a whitespace after the `:` character). If you want to, you can use it like this:
 ```python
